@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>¡Pefeto Caballedo! 🎁</title>
+  
+  <!-- Google Fonts: Fredoka (títulos) y Nunito (cuerpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       TOKENS Y VARIABLES CSS
+       ========================================================================== */
+    :root {
+      /* Paleta clara */
+      --bg-grad-1: #F1E8FB;      /* Lila suave */
+      --bg-grad-2: #FFE9D6;      /* Durazno suave */
+      --color-ink: #3B2A55;      /* Tinta violeta oscuro */
+      --color-ink-muted: #6A5885;/* Tinta secundaria */
+      --color-pink: #F27BAA;     /* Rosa acento */
+      --color-pink-hover: #E36496;
+      --color-pink-light: #FDE8F1;
+      --color-butter: #FFD76A;   /* Manteca */
+      --color-butter-dark: #F3C343;
+      --color-lilac: #B79AF0;    /* Lila */
+      --color-lilac-light: #EFE9FC;
+      --color-card: #FFFFFF;
+      --card-shadow: 0 16px 40px rgba(59, 42, 85, 0.08);
+      --btn-shadow: 0 8px 24px rgba(242, 123, 170, 0.35);
+
+      /* Tipografías */
+      --font-title: 'Fredoka', 'Quicksand', 'Arial Rounded MT Bold', sans-serif;
+      --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* Modo Oscuro */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-grad-1: #1D152B;
+        --bg-grad-2: #2B1D28;
+        --color-ink: #F7F2FE;
+        --color-ink-muted: #C1B5D6;
+        --color-card: #281E3B;
+        --color-pink-light: rgba(242, 123, 170, 0.2);
+        --color-lilac-light: rgba(183, 154, 240, 0.2);
+        --card-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+        --btn-shadow: 0 8px 24px rgba(242, 123, 170, 0.5);
+      }
+    }
+
+    /* ==========================================================================
+       RESET Y BASE MOBILE-FIRST
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      min-height: 100dvh;
+      font-family: var(--font-body);
+      color: var(--color-ink);
+      background: linear-gradient(145deg, var(--bg-grad-1) 0%, var(--bg-grad-2) 100%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ==========================================================================
+       ACCESIBILIDAD Y REDUCED MOTION
+       ========================================================================== */
+    :focus-visible {
+      outline: 3px solid var(--color-butter);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+      .confetti-piece {
+        display: none !important;
+      }
+    }
+
+    /* ==========================================================================
+       BOTÓN FLOTANTE DE AUDIO
+       ========================================================================== */
+    .audio-toggle {
+      position: fixed;
+      top: max(16px, calc(12px + env(safe-area-inset-top, 0px)));
+      right: max(16px, calc(12px + env(safe-area-inset-right, 0px)));
+      z-index: 999;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid var(--color-lilac);
+      background: var(--color-card);
+      color: var(--color-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(59, 42, 85, 0.12);
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .audio-toggle:hover {
+      transform: scale(1.08);
+      background-color: var(--color-pink-light);
+    }
+
+    .audio-toggle:active {
+      transform: scale(0.95);
+    }
+
+    .audio-toggle svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+      transition: transform 0.2s ease;
+    }
+
+    .audio-toggle.playing svg {
+      color: var(--color-pink);
+    }
+
+    /* ==========================================================================
+       CONTENEDOR DE PANTALLAS
+       ========================================================================== */
+    .app-viewport {
+      width: 100%;
+      max-width: 520px;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1.25rem;
+      position: relative;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .screen.active {
+      display: flex;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ==========================================================================
+       PANTALLA 1: EL REGALO CSS
+       ========================================================================== */
+    .gift-title {
+      font-family: var(--font-title);
+      font-size: clamp(1.45rem, 5vw, 1.85rem);
+      font-weight: 700;
+      color: var(--color-ink);
+      line-height: 1.35;
+      margin-bottom: 2.5rem;
+      max-width: 380px;
+    }
+
+    .gift-container {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 2rem;
+      animation: giftFloat 3.2s ease-in-out infinite, giftWiggle 5s ease-in-out infinite;
+      transition: transform 0.2s ease;
+    }
+
+    .gift-container:active {
+      transform: scale(0.96);
+    }
+
+    /* Tapa del regalo */
+    .gift-lid {
+      position: absolute;
+      top: 18px;
+      left: 5px;
+      width: 140px;
+      height: 32px;
+      background: #FA89B6;
+      border-radius: 10px 10px 4px 4px;
+      box-shadow: 0 4px 12px rgba(59, 42, 85, 0.15);
+      z-index: 3;
+      transform-origin: 10% 100%;
+      transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+    }
+
+    /* Moño de la tapa */
+    .gift-bow-wrap {
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .bow-left, .bow-right {
+      width: 26px;
+      height: 20px;
+      border: 5px solid var(--color-butter);
+      border-radius: 50% 50% 20% 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .bow-left {
+      transform: rotate(-30deg) translate(3px, 2px);
+    }
+
+    .bow-right {
+      border-radius: 50% 50% 50% 20%;
+      transform: rotate(30deg) translate(-3px, 2px);
+    }
+
+    .bow-center {
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 14px;
+      background: var(--color-butter-dark);
+      border-radius: 50%;
+      z-index: 4;
+    }
+
+    /* Cinta de la tapa */
+    .gift-lid-ribbon {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 100%;
+      background: var(--color-butter);
+    }
+
+    /* Cuerpo de la caja */
+    .gift-box {
+      position: absolute;
+      bottom: 0;
+      left: 14px;
+      width: 122px;
+      height: 104px;
+      background: var(--color-pink);
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 16px 32px var(--btn-shadow);
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    /* Cinta vertical de la caja */
+    .gift-box-ribbon-v {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 100%;
+      background: var(--color-butter);
+    }
+
+    /* Cinta horizontal de la caja */
+    .gift-box-ribbon-h {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      height: 22px;
+      background: var(--color-butter);
+    }
+
+    /* Sombra del regalo en el suelo */
+    .gift-shadow {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 16px;
+      background: rgba(59, 42, 85, 0.16);
+      border-radius: 50%;
+      filter: blur(4px);
+      z-index: 1;
+      animation: giftShadowPulse 3.2s ease-in-out infinite;
+    }
+
+    .gift-hint {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-ink-muted);
+      letter-spacing: 0.5px;
+      animation: pulseText 2s ease-in-out infinite;
+    }
+
+    /* Animación de apertura */
+    .gift-container.opened .gift-lid {
+      transform: translate(-30px, -60px) rotate(-32deg);
+      opacity: 0.9;
+    }
+
+    .gift-container.opened {
+      animation: none;
+      transform: scale(1.06);
+    }
+
+    @keyframes giftFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes giftWiggle {
+      0%, 80%, 100% { transform: rotate(0deg); }
+      85% { transform: rotate(-3deg); }
+      90% { transform: rotate(3deg); }
+      95% { transform: rotate(-2deg); }
+    }
+
+    @keyframes giftShadowPulse {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.16; }
+      50% { transform: translateX(-50%) scale(0.85); opacity: 0.08; }
+    }
+
+    @keyframes pulseText {
+      0%, 100% { opacity: 0.65; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
+
+    /* ==========================================================================
+       PANTALLA 2: MEME DEL SOMBRERO ("PEFETO CABALLEDO")
+       ========================================================================== */
+    .meme-hat-wrap {
+      width: 130px;
+      height: 130px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: hatPop 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .meme-hat-wrap svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 10px 18px rgba(59, 42, 85, 0.18));
+    }
+
+    @keyframes hatPop {
+      0% {
+        transform: scale(0) rotate(-25deg);
+        opacity: 0;
+      }
+      70% {
+        transform: scale(1.18) rotate(6deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    .meme-title {
+      font-family: var(--font-title);
+      font-size: clamp(1.7rem, 6vw, 2.2rem);
+      font-weight: 700;
+      color: var(--color-pink);
+      margin-bottom: 0.6rem;
+      line-height: 1.25;
+    }
+
+    .meme-sub {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--color-ink-muted);
+      margin-bottom: 2.2rem;
+    }
+
+    /* ==========================================================================
+       BOTONES ESTILIZADOS
+       ========================================================================== */
+    .btn-main {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #FFFFFF;
+      background: var(--color-pink);
+      border: none;
+      border-radius: 999px;
+      padding: 0.85rem 2.2rem;
+      cursor: pointer;
+      box-shadow: var(--btn-shadow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-main:hover {
+      background-color: var(--color-pink-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(242, 123, 170, 0.45);
+    }
+
+    .btn-main:active {
+      transform: translateY(1px);
+    }
+
+    /* ==========================================================================
+       PANTALLA 3: TARJETAS DE MENSAJES CON PROGRESO
+       ========================================================================== */
+    .card-wrap {
+      width: 100%;
+      background: var(--color-card);
+      border-radius: 28px;
+      padding: 2.4rem 1.8rem;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .message-title {
+      font-family: var(--font-title);
+      font-size: clamp(1.45rem, 5vw, 1.9rem);
+      font-weight: 700;
+      color: var(--color-pink);
+      line-height: 1.3;
+      margin-bottom: 1.1rem;
+    }
+
+    .message-body {
+      font-size: clamp(1.05rem, 3.8vw, 1.2rem);
+      font-weight: 600;
+      line-height: 1.65;
+      color: var(--color-ink);
+      margin-bottom: 1.8rem;
+    }
+
+    /* ==========================================================================
+       CITA FINAL: TEMÓN DE AIRBAG
+       ========================================================================== */
+    .airbag-quote-wrap {
+      width: 100%;
+      margin-bottom: 1.8rem;
+      animation: fadeInQuote 0.8s ease-out;
+    }
+
+    .airbag-quote-card {
+      background: linear-gradient(135deg, rgba(242, 123, 170, 0.12) 0%, rgba(255, 215, 106, 0.16) 100%);
+      border: 1.5px solid var(--color-lilac);
+      border-radius: 18px;
+      padding: 1.1rem 1.3rem;
+      position: relative;
+      text-align: center;
+    }
+
+    .airbag-quote-text {
+      font-family: var(--font-title);
+      font-size: clamp(1rem, 3.6vw, 1.15rem);
+      font-weight: 600;
+      color: var(--color-ink);
+      font-style: italic;
+      line-height: 1.45;
+      margin-bottom: 0.5rem;
+    }
+
+    .airbag-quote-caption {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--color-pink);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .airbag-play-btn {
+      margin-top: 0.6rem;
+      background: var(--color-butter);
+      border: 1.5px solid var(--color-butter-dark);
+      color: #3B2A55;
+      font-family: var(--font-title);
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.45rem 1.1rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .airbag-play-btn:hover {
+      transform: scale(1.04);
+      background-color: #FFE187;
+    }
+
+    .airbag-play-btn:active {
+      transform: scale(0.97);
+    }
+
+    @keyframes fadeInQuote {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Puntitos de progreso */
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 1.8rem;
+    }
+
+    .progress-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-lilac-light);
+      border: 1.5px solid var(--color-lilac);
+      transition: width 0.35s ease, background-color 0.35s ease, border-color 0.35s ease, border-radius 0.35s ease;
+    }
+
+    .progress-dot.active {
+      width: 24px;
+      border-radius: 12px;
+      background: var(--color-pink);
+      border-color: var(--color-pink);
+    }
+
+    .progress-dot.completed {
+      background: var(--color-butter);
+      border-color: var(--color-butter-dark);
+    }
+
+    /* ==========================================================================
+       CONFETI NATIVO EN EL DOM
+       ========================================================================== */
+    #confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 998;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      will-change: transform, opacity;
+      animation: confettiFall var(--fall-duration, 2.5s) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translate3d(var(--start-x), var(--start-y), 0) rotate(0deg) rotateX(0deg);
+        opacity: 1;
+      }
+      80% {
+        opacity: 0.95;
+      }
+      100% {
+        transform: translate3d(var(--end-x), var(--end-y, 105vh), 0) rotate(var(--rot-z, 720deg)) rotateX(var(--rot-x, 360deg));
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Audio del meme (reproducido desde el inicio / primer toque) -->
+  <audio id="meme-audio" src="meme.mp3" preload="auto"></audio>
+
+  <!-- Audio de Airbag para la cita final -->
+  <audio id="airbag-audio" src="airbag.mp3" preload="none"></audio>
+
+  <!-- Botón flotante para pausar / reanudar audio -->
+  <button id="audio-toggle-btn" class="audio-toggle" aria-label="Silenciar audio" title="Audio">
+    <!-- Icono Parlante SVG -->
+    <svg id="audio-icon-on" viewBox="0 0 24 24">
+      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+    </svg>
+    <svg id="audio-icon-off" viewBox="0 0 24 24" style="display: none;">
+      <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27l4.73 4.73H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+    </svg>
+  </button>
+
+  <!-- Contenedor general de partículas de confeti -->
+  <div id="confetti-container" aria-hidden="true"></div>
+
+  <!-- Vista principal de pantallas -->
+  <main class="app-viewport">
+
+    <!-- ====================================================================
+         1. PANTALLA DEL REGALO
+         ==================================================================== -->
+    <section id="screen-gift" class="screen active" aria-label="Pantalla del regalo">
+      <h1 class="gift-title">Caballedo, ¿a usted le gustan los regalos?</h1>
+      
+      <div id="gift-box" class="gift-container" role="button" tabindex="0" aria-label="Tocar para abrir el regalo">
+        <div class="gift-lid">
+          <div class="gift-bow-wrap">
+            <div class="bow-left"></div>
+            <div class="bow-right"></div>
+            <div class="bow-center"></div>
+          </div>
+          <div class="gift-lid-ribbon"></div>
+        </div>
+        <div class="gift-box">
+          <div class="gift-box-ribbon-v"></div>
+          <div class="gift-box-ribbon-h"></div>
+        </div>
+        <div class="gift-shadow"></div>
+      </div>
+
+      <p class="gift-hint">Tocá la cajita para abrirla ✨</p>
+    </section>
+
+
+    <!-- ====================================================================
+         2. PANTALLA MEME: "¡PEFETO, PEFETO CABALLEDO!"
+         ==================================================================== -->
+    <section id="screen-meme" class="screen" aria-label="Pantalla meme caballedo">
+      <div class="meme-hat-wrap">
+        <!-- Sombrero de caballero elegante estilo meme -->
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Copa del sombrero -->
+          <path d="M28 20 C28 16 32 14 36 14 L64 14 C68 14 72 16 72 20 L69 64 L31 64 Z" fill="#251B33"/>
+          <path d="M33 18 L67 18 L65 30 L35 30 Z" fill="#3D2D54" opacity="0.4"/>
+          <!-- Cinta rosa del sombrero -->
+          <rect x="30.5" y="52" width="39" height="12" fill="#F27BAA" rx="2"/>
+          <rect x="30.5" y="52" width="39" height="3" fill="#FFD76A"/>
+          <!-- Ala del sombrero curvada -->
+          <path d="M12 66 C12 63 30 61 50 61 C70 61 88 63 88 66 C88 71 68 73 50 73 C32 73 12 71 12 66 Z" fill="#251B33"/>
+          <!-- Brillos cómicos -->
+          <path d="M78 28 L82 32 M82 28 L78 32" stroke="#FFD76A" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M18 38 L22 42 M22 38 L18 42" stroke="#F27BAA" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <h2 class="meme-title">¡Pefeto, pefeto caballedo!</h2>
+      <p class="meme-sub">Ahora sí, empecemos…</p>
+
+      <button id="btn-meme-next" class="btn-main">
+        Seguir <span>→</span>
+      </button>
+    </section>
+
+
+    <!-- ====================================================================
+         3. PANTALLA DE TARJETAS DE MENSAJE (5 PASOS)
+         ==================================================================== -->
+    <section id="screen-messages" class="screen" aria-label="Mensajes de cumpleaños">
+      <div class="card-wrap">
+        <h2 id="msg-card-title" class="message-title" style="display: none;"></h2>
+        <p id="msg-card-body" class="message-body"></p>
+
+        <!-- Contenedor dinámico para la cita de Airbag en el final -->
+        <div id="airbag-quote-container" class="airbag-quote-wrap" style="display: none;">
+          <div class="airbag-quote-card">
+            <p id="airbag-quote-text" class="airbag-quote-text">«Vivamos el momento, que las cosas pasan y no vuelven más…»</p>
+            <span class="airbag-quote-caption">🎸 Temón de Airbag</span>
+            <br>
+            <button id="btn-airbag-play" class="airbag-play-btn" type="button">
+              ▶ Escuchar temón
+            </button>
+          </div>
+        </div>
+
+        <button id="btn-msg-next" class="btn-main">
+          Seguir <span>→</span>
+        </button>
+
+        <!-- Barra de progreso con 5 puntitos -->
+        <div id="msg-progress-bar" class="progress-bar" aria-label="Progreso de mensajes">
+          <span class="progress-dot" data-index="0"></span>
+          <span class="progress-dot" data-index="1"></span>
+          <span class="progress-dot" data-index="2"></span>
+          <span class="progress-dot" data-index="3"></span>
+          <span class="progress-dot" data-index="4"></span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /* =========================================================================
+       ZONA DE CONFIGURACIÓN Y CONTENIDO EDITABLE
+       ========================================================================= */
+
+    // 1. Nombre de la persona (dejar vacío "" si se prefiere omitir)
+    const NAME = ""; // Ej: "Sofi", "Martín", etc.
+
+    // 2. Ruta del audio del meme que suena al abrir la página / tocar el regalo
+    const MEME_AUDIO_SRC = "meme.mp3";
+
+    // 3. Cita final de Airbag
+    const AIRBAG_QUOTE_DATA = {
+      text: "«Vivamos el momento, que las cosas pasan y no vuelven más…»",
+      caption: "🎸 Temón de Airbag",
+      audioSrc: "airbag.mp3"
+    };
+
+    // 4. Array con las 5 pantallas de mensajes
+    const MESSAGES = [
+      {
+        // a) Mensaje 1
+        title: "¡Feliz cumpleaños, corazón! 🎉",
+        body: "Espero que este sea un día lindo para vos junto a tu familia, que tienen suerte de tenerte aunque a veces no lo veas así. Sos una hija maravillosa y hermana muy cariñosa.",
+        showAirbagQuote: false,
+        bigConfetti: false
+      },
+      {
+        // b) Mensaje 2
+        title: "",
+        body: "La verdad, no pensé que en tan poco tiempo ibas a convertirte en alguien tan especial para mí. Y mirá vos: pasó.",
+        showAirbagQuote: false,
+        bigConfetti: false
+      },
+      {
+        // c) Mensaje 3
+        title: "",
+        body: "Gracias por dejarme conocer un poquito de tu mundo. Sé que confiar no siempre es fácil, y valoro un montón cada vez que decidís compartir algo conmigo.",
+        showAirbagQuote: false,
+        bigConfetti: false
+      },
+      {
+        // d) Mensaje 4
+        title: "",
+        body: "Me gusta hablar con vos, me gusta cómo sos. Sin apuros, a tu ritmo. Me alegra que estés en mi vida, de corazón.",
+        showAirbagQuote: false,
+        bigConfetti: false
+      },
+      {
+        // e) Mensaje 5 (Final con cita de Airbag)
+        title: "Que este año venga lindo 💛",
+        body: "Con risas, gente que te cuide como merecés y cosas que te hagan feliz. Pefeto cumpleaños, caballedo.",
+        showAirbagQuote: true,
+        bigConfetti: true,
+        isLast: true
+      }
+    ];
+
+    /* =========================================================================
+       SISTEMA DE AUDIO
+       ========================================================================= */
+    const memeAudio = document.getElementById('meme-audio');
+    const airbagAudio = document.getElementById('airbag-audio');
+    const audioBtn = document.getElementById('audio-toggle-btn');
+    const audioIconOn = document.getElementById('audio-icon-on');
+    const audioIconOff = document.getElementById('audio-icon-off');
+    const btnAirbagPlay = document.getElementById('btn-airbag-play');
+
+    let currentActiveAudio = null;
+    let isAudioMuted = false;
+
+    if (memeAudio) {
+      memeAudio.volume = 0.85;
+      memeAudio.src = MEME_AUDIO_SRC;
+    }
+
+    if (airbagAudio) {
+      airbagAudio.volume = 0.65;
+      airbagAudio.src = AIRBAG_QUOTE_DATA.audioSrc;
+    }
+
+    function updateAudioUI(playing) {
+      if (playing) {
+        audioIconOn.style.display = 'block';
+        audioIconOff.style.display = 'none';
+        audioBtn.setAttribute('aria-label', 'Silenciar audio');
+        audioBtn.classList.add('playing');
+      } else {
+        audioIconOn.style.display = 'none';
+        audioIconOff.style.display = 'block';
+        audioBtn.setAttribute('aria-label', 'Reanudar audio');
+        audioBtn.classList.remove('playing');
+      }
+    }
+
+    function playMemeAudio() {
+      if (!memeAudio) return;
+      currentActiveAudio = memeAudio;
+      const playPromise = memeAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          updateAudioUI(true);
+        }).catch(err => {
+          // El navegador puede requerir interacción previa del usuario
+          console.warn("Autoplay en espera de interacción táctil:", err);
+          updateAudioUI(false);
+        });
+      }
+    }
+
+    function toggleAudio() {
+      if (currentActiveAudio) {
+        if (!currentActiveAudio.paused) {
+          currentActiveAudio.pause();
+          updateAudioUI(false);
+        } else {
+          currentActiveAudio.play().then(() => updateAudioUI(true)).catch(() => {});
+        }
+      } else {
+        playMemeAudio();
+      }
+    }
+
+    audioBtn.addEventListener('click', toggleAudio);
+
+    // Intentar reproducir el audio del meme apenas carga la página
+    window.addEventListener('DOMContentLoaded', () => {
+      playMemeAudio();
+    });
+
+    // Como respaldo en celulares (política de autoplay), arrancar en el primer toque de la pantalla si no arrancó
+    function triggerAudioOnFirstTouch() {
+      if (memeAudio && memeAudio.paused && !memeAudio.ended && memeAudio.currentTime === 0) {
+        playMemeAudio();
+      }
+      window.removeEventListener('pointerdown', triggerAudioOnFirstTouch);
+      window.removeEventListener('touchstart', triggerAudioOnFirstTouch);
+    }
+    window.addEventListener('pointerdown', triggerAudioOnFirstTouch, { once: true });
+    window.addEventListener('touchstart', triggerAudioOnFirstTouch, { once: true });
+
+    // Reproducción del temón de Airbag en la cita final
+    let isAirbagPlaying = false;
+    btnAirbagPlay?.addEventListener('click', () => {
+      if (!airbagAudio) return;
+      if (isAirbagPlaying) {
+        airbagAudio.pause();
+        isAirbagPlaying = false;
+        btnAirbagPlay.innerHTML = '▶ Escuchar temón';
+        updateAudioUI(false);
+      } else {
+        // Pausar el meme si aún estuviera sonando
+        if (memeAudio && !memeAudio.paused) {
+          memeAudio.pause();
+        }
+        currentActiveAudio = airbagAudio;
+        airbagAudio.currentTime = 0;
+        airbagAudio.play().then(() => {
+          isAirbagPlaying = true;
+          btnAirbagPlay.innerHTML = '⏸ Pausar temón';
+          updateAudioUI(true);
+        }).catch(err => console.warn("No se pudo reproducir Airbag:", err));
+
+        airbagAudio.onended = () => {
+          isAirbagPlaying = false;
+          btnAirbagPlay.innerHTML = '▶ Escuchar temón';
+          updateAudioUI(false);
+        };
+      }
+    });
+
+    /* =========================================================================
+       SISTEMA DE CONFETI EN EL DOM
+       ========================================================================= */
+    const confettiContainer = document.getElementById('confetti-container');
+    const PALETTE_COLORS = ['#F27BAA', '#FFD76A', '#B79AF0', '#FFFFFF', '#FA89B6', '#F8CF58', '#CBB4F5'];
+
+    function shouldReduceMotion() {
+      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    function createConfettiPiece(startX, startY, endX, endY, duration, size, shape, color) {
+      if (shouldReduceMotion()) return;
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.setProperty('--start-x', `${startX}px`);
+      el.style.setProperty('--start-y', `${startY}px`);
+      el.style.setProperty('--end-x', `${endX}px`);
+      el.style.setProperty('--end-y', `${endY}px`);
+      el.style.setProperty('--fall-duration', `${duration}s`);
+      el.style.setProperty('--rot-z', `${Math.floor(Math.random() * 900 - 450)}deg`);
+      el.style.setProperty('--rot-x', `${Math.floor(Math.random() * 720 - 360)}deg`);
+      el.style.backgroundColor = color;
+      el.style.width = `${size.w}px`;
+      el.style.height = `${size.h}px`;
+      el.style.borderRadius = shape === 'circle' ? '50%' : '2px';
+
+      el.addEventListener('animationend', () => el.remove());
+      confettiContainer.appendChild(el);
+    }
+
+    // Estallido desde un punto (apertura del regalo)
+    function burstConfetti(x, y, count = 45) {
+      if (shouldReduceMotion()) return;
+      for (let i = 0; i < count; i++) {
+        const color = PALETTE_COLORS[Math.floor(Math.random() * PALETTE_COLORS.length)];
+        const isCircle = Math.random() > 0.45;
+        const size = isCircle ? { w: 9, h: 9 } : { w: 8 + Math.random() * 4, h: 12 + Math.random() * 6 };
+        
+        const angle = (Math.PI * 2 * i) / count + (Math.random() * 0.4 - 0.2);
+        const distance = 80 + Math.random() * 180;
+        const midX = x + Math.cos(angle) * distance;
+        const midY = y + Math.sin(angle) * distance - 80;
+        const endX = midX + (Math.random() * 160 - 80);
+        const endY = window.innerHeight + 40;
+        const duration = 2.2 + Math.random() * 1.2;
+
+        createConfettiPiece(x, y, endX, endY, duration, size, isCircle ? 'circle' : 'rect', color);
+      }
+    }
+
+    // Lluvia completa (pantalla final)
+    function rainConfettiShower(count = 95) {
+      if (shouldReduceMotion()) return;
+      const vw = window.innerWidth;
+      for (let i = 0; i < count; i++) {
+        const color = PALETTE_COLORS[Math.floor(Math.random() * PALETTE_COLORS.length)];
+        const isCircle = Math.random() > 0.5;
+        const size = isCircle ? { w: 10, h: 10 } : { w: 9 + Math.random() * 5, h: 14 + Math.random() * 6 };
+
+        const startX = Math.random() * vw;
+        const startY = -20 - Math.random() * 200;
+        const endX = startX + (Math.random() * 200 - 100);
+        const endY = window.innerHeight + 50;
+        const duration = 2.5 + Math.random() * 1.8;
+
+        setTimeout(() => {
+          createConfettiPiece(startX, startY, endX, endY, duration, size, isCircle ? 'circle' : 'rect', color);
+        }, Math.random() * 1200);
+      }
+    }
+
+    /* =========================================================================
+       MÁQUINA DE ESTADOS Y PANTALLAS
+       ========================================================================= */
+    const screenGift = document.getElementById('screen-gift');
+    const screenMeme = document.getElementById('screen-meme');
+    const screenMessages = document.getElementById('screen-messages');
+
+    const giftBox = document.getElementById('gift-box');
+    const btnMemeNext = document.getElementById('btn-meme-next');
+    const btnMsgNext = document.getElementById('btn-msg-next');
+
+    const msgCardTitle = document.getElementById('msg-card-title');
+    const msgCardBody = document.getElementById('msg-card-body');
+    const airbagQuoteContainer = document.getElementById('airbag-quote-container');
+    const airbagQuoteText = document.getElementById('airbag-quote-text');
+    const progressDots = document.querySelectorAll('.progress-dot');
+
+    let currentMessageIndex = 0;
+
+    function transitionToScreen(newScreen) {
+      const allScreens = [screenGift, screenMeme, screenMessages];
+      allScreens.forEach(s => {
+        s.classList.remove('active');
+        s.style.display = 'none';
+      });
+
+      newScreen.style.display = 'flex';
+      // Forzar reflujo para que la animación CSS transicione con suavidad
+      void newScreen.offsetWidth;
+      newScreen.classList.add('active');
+    }
+
+    // 1. Interacción con el regalo
+    let giftOpened = false;
+    function openGift() {
+      if (giftOpened) return;
+      giftOpened = true;
+
+      // Asegurar que el audio del meme suene
+      playMemeAudio();
+
+      giftBox.classList.add('opened');
+
+      // Calcular centro del regalo para el estallido
+      const rect = giftBox.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 3;
+      burstConfetti(centerX, centerY, 55);
+
+      // Esperar ~900 ms y pasar a la pantalla meme
+      setTimeout(() => {
+        transitionToScreen(screenMeme);
+      }, 900);
+    }
+
+    giftBox.addEventListener('click', openGift);
+    giftBox.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openGift();
+      }
+    });
+
+    // 2. Pantalla Meme -> Pantalla Mensajes
+    btnMemeNext.addEventListener('click', () => {
+      currentMessageIndex = 0;
+      renderCurrentMessage();
+      transitionToScreen(screenMessages);
+    });
+
+    // 3. Render de tarjetas de mensaje
+    function renderCurrentMessage() {
+      const msg = MESSAGES[currentMessageIndex];
+      if (!msg) return;
+
+      // Título
+      if (msg.title && msg.title.trim() !== '') {
+        msgCardTitle.textContent = msg.title;
+        msgCardTitle.style.display = 'block';
+      } else {
+        msgCardTitle.textContent = '';
+        msgCardTitle.style.display = 'none';
+      }
+
+      // Cuerpo
+      msgCardBody.textContent = msg.body;
+
+      // Cita de Airbag
+      if (msg.showAirbagQuote) {
+        airbagQuoteContainer.style.display = 'block';
+        if (airbagQuoteText) {
+          airbagQuoteText.textContent = AIRBAG_QUOTE_DATA.text;
+        }
+      } else {
+        airbagQuoteContainer.style.display = 'none';
+      }
+
+      // Texto de botón según si es el último
+      if (msg.isLast) {
+        btnMsgNext.innerHTML = 'Volver a leer ↺';
+      } else {
+        btnMsgNext.innerHTML = 'Seguir <span>→</span>';
+      }
+
+      // Actualizar puntos de progreso
+      progressDots.forEach((dot, idx) => {
+        dot.classList.remove('active', 'completed');
+        if (idx === currentMessageIndex) {
+          dot.classList.add('active');
+        } else if (idx < currentMessageIndex) {
+          dot.classList.add('completed');
+        }
+      });
+
+      // Confeti grande si corresponde
+      if (msg.bigConfetti) {
+        rainConfettiShower(100);
+      }
+    }
+
+    btnMsgNext.addEventListener('click', () => {
+      if (currentMessageIndex < MESSAGES.length - 1) {
+        currentMessageIndex++;
+        renderCurrentMessage();
+      } else {
+        // Al terminar el último mensaje, reiniciar el recorrido de tarjetas
+        currentMessageIndex = 0;
+        renderCurrentMessage();
+      }
+    });
+
+    // Permitir clic directo en los puntitos para volver o avanzar
+    progressDots.forEach(dot => {
+      dot.style.cursor = 'pointer';
+      dot.addEventListener('click', () => {
+        const targetIdx = parseInt(dot.dataset.index, 10);
+        if (!isNaN(targetIdx) && targetIdx >= 0 && targetIdx < MESSAGES.length) {
+          currentMessageIndex = targetIdx;
+          renderCurrentMessage();
+        }
+      });
+    });
+
+  </script>
+</body>
+</html>
