@@ -494,12 +494,13 @@
 
     .airbag-quote-text {
       font-family: var(--font-title);
-      font-size: clamp(1rem, 3.6vw, 1.15rem);
+      font-size: clamp(0.95rem, 3.5vw, 1.1rem);
       font-weight: 600;
       color: var(--color-ink);
       font-style: italic;
-      line-height: 1.45;
-      margin-bottom: 0.5rem;
+      line-height: 1.55;
+      margin-bottom: 0.7rem;
+      white-space: pre-line;
     }
 
     .airbag-quote-caption {
@@ -701,7 +702,7 @@
         <!-- Contenedor dinámico para la cita de Airbag en el final -->
         <div id="airbag-quote-container" class="airbag-quote-wrap" style="display: none;">
           <div class="airbag-quote-card">
-            <p id="airbag-quote-text" class="airbag-quote-text">«Vivamos el momento, que las cosas pasan y no vuelven más…»</p>
+            <p id="airbag-quote-text" class="airbag-quote-text">«Vivamos el momento,<br>vivimos el momento<br><br>Vivamos el momento y nada más<br><br>Ah-ah, ah-ah-ah, ah-ah-ah»</p>
             <span class="airbag-quote-caption">🎸 Temón de Airbag</span>
             <br>
             <button id="btn-airbag-play" class="airbag-play-btn" type="button">
@@ -740,7 +741,7 @@
 
     // 3. Cita final de Airbag
     const AIRBAG_QUOTE_DATA = {
-      text: "«Vivamos el momento, que las cosas pasan y no vuelven más…»",
+      text: "«Vivamos el momento,<br>vivimos el momento<br><br>Vivamos el momento y nada más<br><br>Ah-ah, ah-ah-ah, ah-ah-ah»",
       caption: "🎸 Temón de Airbag",
       audioSrc: "airbag.mp3"
     };
@@ -1060,7 +1061,7 @@
       if (msg.showAirbagQuote) {
         airbagQuoteContainer.style.display = 'block';
         if (airbagQuoteText) {
-          airbagQuoteText.textContent = AIRBAG_QUOTE_DATA.text;
+          airbagQuoteText.innerHTML = AIRBAG_QUOTE_DATA.text;
         }
       } else {
         airbagQuoteContainer.style.display = 'none';
